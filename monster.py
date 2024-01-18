@@ -2,9 +2,7 @@ import pygame
 import random
 import animation
 
-# créer une classe qui va gérer la notion de montre sur notre jeu
-
-
+# Crear una clase para gestionar el concepto de monstruo en nuestro juego
 class Monster(animation.AnimateSprite):
 
     def __init__(self, game, name, size, offset=0):
@@ -13,7 +11,6 @@ class Monster(animation.AnimateSprite):
         self.health = 100
         self.max_health = 100
         self.attack = 0.3
-
         self.rect = self.image.get_rect()
         self.rect.x = 1000 + random.randint(0, 300)
         self.rect.y = 540 - offset
@@ -26,68 +23,70 @@ class Monster(animation.AnimateSprite):
 
     def set_loot_amount(self, amount):
         self.loot_amount = amount
+
     def damage(self, amount):
-        # infliger les dégâts
+        # Infligir daño
         self.health -= amount
 
-        # vérifier si le nouveau nombre de points de vie est inférieur ouégal à 0
+        # Verificar si la salud ha llegado a 0
         if self.health <= 0:
-            # réapparaitre comme un nouveau monstre
+            # Reaparecer como un nuevo monstruo
             self.rect.x = 1000 + random.randint(0, 300)
             self.velocity = random.randint(1, self.default_speed)
             self.health = self.max_health
-            # ajouter le nombre de points
+            # Añadir puntuación
             self.game.add_score(self.loot_amount)
 
-        # si la barre d'évenement est chargée à son maximum
-        if self.game.comet_event.is_full_loaded():
-            # retirer du jeu
-            self.game.all_monsters.remove(self)
+            # Si el evento de cometas está completamente cargado
+            if self.game.comet_event.is_full_loaded():
+                # Eliminar al monstruo del juego
+                self.game.all_monsters.remove(self)
 
-            # appel de la méthode et essayer de déclencher la pluie de cometes
-            self.game.comet_event.attempt_fall()
+                # Intentar activar la lluvia de cometas
+                self.game.comet_event.attempt_fall()
+
     def update_animation(self):
         self.animate(loop=True)
 
     def update_health_bar(self, surface):
-        # definir une couleur pour notre jauge de vie (vert clair)
+        # Definir color de la barra de salud (verde claro)
         bar_color = (111, 210, 46)
-        # definoir une couleur pour l'arrière plan de la jauge(gris foncé)
+        # Definir color de fondo de la barra de salud (gris oscuro)
         back_bar_color = (60, 63, 60)
 
-        # definir la position de notre jauge de vie ainsi que de sa largeur
+        # Definir posición y tamaño de la barra de salud
         bar_position = [self.rect.x + 10, self.rect.y - 20, self.health, 5]
-
-        # definir la positionde l'arrière plan de la jauge de vie
+        # Definir posición y tamaño del fondo de la barra de salud
         back_bar_position = [self.rect.x + 10, self.rect.y - 20, self.max_health, 5]
 
-        # dessiner notre barre de vie
+        # Dibujar la barra de salud
         pygame.draw.rect(surface, back_bar_color, back_bar_position)
         pygame.draw.rect(surface, bar_color, bar_position)
 
     def forward(self):
-        # le deplacement ne se fait que si il n'y  de collision avec un groupe de joueur
+        # Moverse solo si no hay colisión con el jugador
         if not self.game.check_collision(self, self.game.all_players):
             self.rect.x -= self.velocity
-        # si le monstre est en collision avec le joueur
+        # Si hay colisión con el jugador
         else:
-            # infliger les dégats au joueur
+            # Infligir daño al jugador
             self.game.player.damage(self.attack)
 
-# definir une classe pour la momie
+# Definir clase para la momia
 class Mummy(Monster):
 
     def __init__(self, game):
         super().__init__(game, "mummy", (130, 130))
         self.set_speed(3)
         self.set_loot_amount(20)
-# définir une classe pour l'alien
+
+# Definir clase para el alien
 class Alien(Monster):
 
     def __init__(self, game):
-        super().__init__(game, "alien", (300, 300), 130)
+        super().__init__(game, "alien", (300, 300), 140)
         self.health = 250
         self.max_health = 250
         self.attack = 0.8
-        self.set_speed(1)
+        self.set_speed(2)
         self.set_loot_amount(80)

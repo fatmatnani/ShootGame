@@ -1,50 +1,44 @@
 import pygame
 import random
 
-# créer une classe pour gérer cette comete
+# Clase para gestionar la cometa
 class Comet(pygame.sprite.Sprite):
     def __init__(self, comet_event):
         super().__init__()
-        # definir l'image associée à cette comete
-        self.image = pygame.image.load('assets/comet.png')
+        # Definir la imagen asociada a esta cometa
+        full_size_image = pygame.image.load('assets/comet.png')
+        # Redimensionar la imagen al tamaño nuevo
+        self.image = pygame.transform.scale(full_size_image, (128, 128))  # Redimensionar a 128x128 o al tamaño que se necesite
         self.rect = self.image.get_rect()
         self.velocity = random.randint(1, 3)
-        self.rect.x = random.randint(20, 800)
-        self.rect.y = - random.randint(0, 800)
+        self.rect.x = random.randint(20, 950)
+        self.rect.y = -random.randint(0, 800)
         self.comet_event = comet_event
 
     def remove(self):
+        # Eliminar la cometa del grupo
         self.comet_event.all_comets.remove(self)
-        # jouer le son
+        # Reproducir el sonido
         self.comet_event.game.sound_manager.play('meteorite')
-        # verifier si le nombre de cometes est de 0
+        # Verificar si el número de cometas es 0
         if len(self.comet_event.all_comets) == 0:
-            print ("l'evenement est fini")
-            # remettre la barre à 0
+            # Resetear la barra de cometas a 0
             self.comet_event.reset_percent()
-            # apparaitre à nouveau les deux premiers monstres
+            # Hacer aparecer de nuevo los monstruos
             self.comet_event.game.start()
+
     def fall(self):
+        # Caer (mover la cometa hacia abajo)
         self.rect.y += self.velocity
 
-        # ne tombe pas sur le sol
-        if self.rect.y >= 500:
-            print("sol")
-            # retirer la comete si elle sort de la fenêtre
+        # No caer fuera de la pantalla (simular el suelo)
+        if self.rect.y >= 600:
+            # Eliminar la cometa si sale de la pantalla
             self.remove()
 
-            # s'il n'y a plus de boule de feu
-            #if len(self.comet_event.all_comets) == 0:
-                #print("l'événement est fini")
-                # remettre la jauge de vie au départ
-                #self.comet_event.reset_percent()
-                #self.comet_event.fall_mode = False
-
-
-        # verifier si la boule de feu touche le joueur
+        # Verificar si la cometa impacta al jugador
         if self.comet_event.game.check_collision(self, self.comet_event.game.all_players):
-            print("joueur touché!")
-            # retirer la boule de feu
+            # Eliminar la cometa al impactar
             self.remove()
-            # subir 20 points de degats
+            # Infligir daño al jugador
             self.comet_event.game.player.damage(20)

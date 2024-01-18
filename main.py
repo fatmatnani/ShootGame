@@ -2,66 +2,71 @@ import pygame
 import math
 from game import Game
 
-
 pygame.init()
-# definir une clock
+
+# Definir un reloj
 clock = pygame.time.Clock()
 FPS = 80
 
-# generer la fenetre de notre jeu
+# Definir las constantes de ancho y alto de pantalla
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
+
+# Generar la ventana de nuestro juego
 pygame.display.set_caption("All against Aliens")
-screen = pygame.display.set_mode((1080, 720))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-# importer et charger l'arrière plan de notre jeu
-background = pygame.image.load('assets/bg.jpg')
+# Importar y cargar el fondo de nuestro juego
+background = pygame.image.load('assets/bg/bg3.png')
+background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-# importer et charger bannière
+# Importar y cargar la bandera
 banner = pygame.image.load('assets/banner.png')
 banner = pygame.transform.scale(banner, (500, 500))
 banner_rect = banner.get_rect()
 banner_rect.x = math.ceil(screen.get_width() / 4)
 
-# importer ou charger notre bouton pour lancer la partie
+# Importar y cargar nuestro botón para iniciar el juego
 play_button = pygame.image.load('assets/button.png')
 play_button = pygame.transform.scale(play_button, (400, 150))
 play_button_rect = play_button.get_rect()
 play_button_rect.x = math.ceil(screen.get_width() / 3.33)
 play_button_rect.y = math.ceil(screen.get_height() / 2)
-# charger notre jeu
-game = Game()
 
+# Cargar nuestro juego
+game = Game(screen)
 
 running = True
-# boucle tant que cette condition est vrai
+
+# Bucle mientras esta condición sea verdadera
 while running:
 
-    # appliquer la fenetre du jeu
-    screen.blit(background, (0, -200))
+    # Aplicar la ventana del juego
+    screen.blit(background, (0, 10))
 
-    # vérifier si notre jeu a commencé
+    # Verificar si nuestro juego ha comenzado
     if game.is_playing:
-        # déclencher les instructions de la partie
+        # Activar las instrucciones de la partida
         game.update(screen)
-    # verifier si notre jeu n'a pas commencé
     else:
-        # ajouter mon écran de bienvenue
+        # Añadir nuestra pantalla de bienvenida
         screen.blit(play_button, play_button_rect)
         screen.blit(banner, banner_rect)
 
-    # mettre à jour l'écran
+    # Actualizar la pantalla
     pygame.display.flip()
 
-    # si le joueur ferme cette fenetre
+    # Si el jugador cierra esta ventana
     for event in pygame.event.get():
-        # que l'événement est fermeture de fenetre
+        # Si el evento es cerrar la ventana
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
-            print("Fermeture du jeu")
-        # detecter si un joueur lache une touche du clavier
+            #print("Cierre del juego")
+        # Detectar si un jugador suelta una tecla
         elif event.type == pygame.KEYDOWN:
             game.pressed[event.key] = True
-            # Détecter si la touche espace est enclenchée pour lancer notre projectile
+            # Detectar si la tecla espaciadora está presionada para lanzar nuestro proyectil
             if event.key == pygame.K_SPACE:
                 game.player.launch_projectile()
 
@@ -69,12 +74,12 @@ while running:
             game.pressed[event.key] = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            # verification pour savoir si la souris est en collision avec le bouton
+            # Verificar para saber si el ratón está en colisión con el botón
             if play_button_rect.collidepoint(event.pos):
-                # mettre le jeu en mode lancé
+                # Poner el juego en modo de inicio
                 game.start()
-                # jouer le son
+                # Reproducir el sonido
                 game.sound_manager.play('click')
 
-    # fixer le nombre de fps sur ma clock
+    # Establecer el número de fps en nuestro reloj
     clock.tick(FPS)
