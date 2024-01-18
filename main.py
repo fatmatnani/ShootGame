@@ -1,4 +1,5 @@
 import pygame
+import asyncio
 import math
 from game import Game
 
@@ -36,50 +37,55 @@ play_button_rect.y = math.ceil(screen.get_height() / 2)
 # Cargar nuestro juego
 game = Game(screen)
 
-running = True
 
-# Bucle mientras esta condición sea verdadera
-while running:
 
-    # Aplicar la ventana del juego
-    screen.blit(background, (0, 10))
+async def main():
+    running = True
+    # Bucle mientras esta condición sea verdadera
+    while running:
 
-    # Verificar si nuestro juego ha comenzado
-    if game.is_playing:
-        # Activar las instrucciones de la partida
-        game.update(screen)
-    else:
-        # Añadir nuestra pantalla de bienvenida
-        screen.blit(play_button, play_button_rect)
-        screen.blit(banner, banner_rect)
+        # Aplicar la ventana del juego
+        screen.blit(background, (0, 10))
 
-    # Actualizar la pantalla
-    pygame.display.flip()
+        # Verificar si nuestro juego ha comenzado
+        if game.is_playing:
+            # Activar las instrucciones de la partida
+            game.update(screen)
+        else:
+            # Añadir nuestra pantalla de bienvenida
+            screen.blit(play_button, play_button_rect)
+            screen.blit(banner, banner_rect)
 
-    # Si el jugador cierra esta ventana
-    for event in pygame.event.get():
-        # Si el evento es cerrar la ventana
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
-            #print("Cierre del juego")
-        # Detectar si un jugador suelta una tecla
-        elif event.type == pygame.KEYDOWN:
-            game.pressed[event.key] = True
-            # Detectar si la tecla espaciadora está presionada para lanzar nuestro proyectil
-            if event.key == pygame.K_SPACE:
-                game.player.launch_projectile()
+        # Actualizar la pantalla
+        pygame.display.flip()
 
-        elif event.type == pygame.KEYUP:
-            game.pressed[event.key] = False
+        # Si el jugador cierra esta ventana
+        for event in pygame.event.get():
+            # Si el evento es cerrar la ventana
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                #print("Cierre del juego")
+            # Detectar si un jugador suelta una tecla
+            elif event.type == pygame.KEYDOWN:
+                game.pressed[event.key] = True
+                # Detectar si la tecla espaciadora está presionada para lanzar nuestro proyectil
+                if event.key == pygame.K_SPACE:
+                    game.player.launch_projectile()
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            # Verificar para saber si el ratón está en colisión con el botón
-            if play_button_rect.collidepoint(event.pos):
-                # Poner el juego en modo de inicio
-                game.start()
-                # Reproducir el sonido
-                game.sound_manager.play('click')
+            elif event.type == pygame.KEYUP:
+                game.pressed[event.key] = False
 
-    # Establecer el número de fps en nuestro reloj
-    clock.tick(FPS)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Verificar para saber si el ratón está en colisión con el botón
+                if play_button_rect.collidepoint(event.pos):
+                    # Poner el juego en modo de inicio
+                    game.start()
+                    # Reproducir el sonido
+                    game.sound_manager.play('click')
+
+        # Establecer el número de fps en nuestro reloj
+        clock.tick(FPS)
+        await asyncio.sleep(0)
+
+asyncio.run(main())        
