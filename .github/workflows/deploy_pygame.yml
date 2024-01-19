@@ -27,8 +27,8 @@ jobs:
             python -m pygbag --build $GITHUB_WORKSPACE/main.py
             echo "Successfully built the game and compiled to WebAssembly"
 
-    - name: "Upload to GitHub pages branch gh-pages"
-      uses: JamesIves/github-pages-deploy-action@4.1.7
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.5.0
       with:
         branch: gh-pages
         folder: shootGame/build/web
