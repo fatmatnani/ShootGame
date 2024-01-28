@@ -1,7 +1,7 @@
 # ShootGame
 
 ## Project Description
-ShootGame is an exciting, Python-based shooting game where players navigate through a world filled with challenges. The aim is to dodge and defeat an array of monsters using various skills and weapons. Designed for intuitive play, ShootGame offers engaging gameplay and hours of entertainment.
+ShootGame is an exciting, Python-based shooting game where players navigate through a world filled with challenges. The aim is to defeat monsters using various skills and weapons. Designed for intuitive play, ShootGame offers engaging gameplay and hours of entertainment.
 
 ## Installation Instructions
 To play ShootGame on your local machine, follow these steps:
